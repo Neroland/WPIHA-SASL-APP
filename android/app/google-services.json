@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "429059812926",
+    "project_id": "wpiha-sasl-app",
+    "storage_bucket": "wpiha-sasl-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429059812926:android:f62b59a365850a5071ab6f",
+        "android_client_info": {
+          "package_name": "com.neroland.sasl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "429059812926-bciin0tbvf01uugalctjts67tds06t03.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoQKd8ZJyJL76Ov3KhgilM17V9K2ahrkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "429059812926-bciin0tbvf01uugalctjts67tds06t03.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "429059812926-75ghtfpv1qeuvq0bu9nu5m8b9r22nv2p.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.saslApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
