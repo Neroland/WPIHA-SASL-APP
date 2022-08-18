@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "429059812926-nu6ceqksbt9mmrtiap7mj2mjp7ntnjuf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neroland.sasl",
+            "certificate_hash": "820d0da93c94f6658d97693986ae5b425371dbed"
+          }
+        },
+        {
           "client_id": "429059812926-bciin0tbvf01uugalctjts67tds06t03.apps.googleusercontent.com",
           "client_type": 3
         }
