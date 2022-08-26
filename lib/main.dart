@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:sasl_app/home_page.dart';
-import 'package:sasl_app/pages/verify_email_page.dart';
+import 'package:sasl_app/theme.dart';
+import 'package:sasl_app/auth_pages/verify_email_page.dart';
 import 'package:sasl_app/utils.dart';
 import 'firebase_options.dart';
-import 'pages/auth_page.dart';
+import 'package:sasl_app/auth_pages/auth_page.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,18 +29,20 @@ class MyApp extends StatelessWidget {
       title: 'South African Ice Hockey Super League',
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
+      theme: myCustomTheme.light(),
+      darkTheme: myCustomTheme.dark(),
+      // ThemeData(
+      //   // This is the theme of your application.
+      //   //
+      //   // Try running your application with "flutter run". You'll see the
+      //   // application has a blue toolbar. Then, without quitting the app, try
+      //   // changing the primarySwatch below to Colors.green and then invoke
+      //   // "hot reload" (press "r" in the console where you ran "flutter run",
+      //   // or simply save your changes to "hot reload" in a Flutter IDE).
+      //   // Notice that the counter didn't reset back to zero; the application
+      //   // is not restarted.
+      //   primarySwatch: Colors.blue,
+      // ),
       home: MainPage(),
     );
   }
@@ -49,7 +51,7 @@ class MyApp extends StatelessWidget {
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
-      body: StreamBuilder<User?>(
+        body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -66,5 +68,7 @@ class MainPage extends StatelessWidget {
             } else {
               return AuthPage();
             }
-          })));
+          }),
+        ),
+      );
 }

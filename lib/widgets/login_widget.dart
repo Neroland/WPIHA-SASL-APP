@@ -1,25 +1,26 @@
-import 'dart:math';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sasl_app/main.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sasl_app/auth_pages/forgot_password_page.dart';
 import 'package:sasl_app/utils.dart';
 
-class SignUpWidget extends StatefulWidget {
-  final VoidCallback onClickedSignIn;
+class LoginWidget extends StatefulWidget {
+  final VoidCallback onClickedSignUp;
 
-  const SignUpWidget({
+  const LoginWidget({
     Key? key,
-    required this.onClickedSignIn,
+    required this.onClickedSignUp,
   }) : super(key: key);
 
   @override
-  _SignUpWidgetState createState() => _SignUpWidgetState();
+  _LoginWidgetState createState() => _LoginWidgetState();
 }
 
-class _SignUpWidgetState extends State<SignUpWidget> {
+class _LoginWidgetState extends State<LoginWidget> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -78,10 +79,27 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   size: 32,
                 ),
                 label: Text(
-                  "Sign Up",
+                  "Sign In",
                   style: TextStyle(fontSize: 24),
                 ),
-                onPressed: signUp,
+                onPressed: signInEmail,
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              GestureDetector(
+                child: Text(
+                  'Forgot Password?',
+                  style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 20),
+                ),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ForgotPasswordPage(),
+                  ),
+                ),
               ),
               SizedBox(
                 height: 24,
@@ -91,23 +109,32 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     style: TextStyle(
                       color: Colors.white,
                     ),
-                    text: "Already have an account?  ",
+                    text: "No account?  ",
                     children: [
                       TextSpan(
                           recognizer: TapGestureRecognizer()
-                            ..onTap = widget.onClickedSignIn,
-                          text: "Sign In",
+                            ..onTap = widget.onClickedSignUp,
+                          text: "Sign Up",
                           style: TextStyle(
                               decoration: TextDecoration.underline,
                               color: Theme.of(context).colorScheme.secondary))
                     ]),
               ),
+              SizedBox(
+                height: 20,
+              ),
+              SignInButton(
+                Buttons.Google,
+                onPressed: () {
+                  signInWithGoogle();
+                },
+              )
             ],
           ),
         ),
       );
 
-  Future signUp() async {
+  Future signInEmail() async {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
 
@@ -120,15 +147,34 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     );
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
-      Utils.showSnackBar(e.message);
+      Utils.showSnackBar(e.message, Colors.red);
     }
 
     // Navigator.of(context) not working!
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    // print("ATT: $googleUser");
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }

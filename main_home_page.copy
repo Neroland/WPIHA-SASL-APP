@@ -1,0 +1,747 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+final db = FirebaseFirestore.instance;
+
+final Stream<QuerySnapshot> seasons =
+    FirebaseFirestore.instance.collection("seasons").snapshots();
+
+// test() async {
+//   await FirebaseFirestore.instance.collection("seasons").get().then((event) {
+//     for (var doc in event.docs) {
+//       print("AVVV: ${doc.id} => ${doc.data()}");
+//     }
+//   });
+// }
+
+class mainMenuPage extends StatelessWidget {
+  mainMenuPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double spacer = 10;
+    double card_width = 210;
+
+    return Column(
+      children: [
+        SizedBox(
+          height: spacer,
+        ),
+        const Text(
+          "Matches",
+          style: const TextStyle(
+            fontSize: 20,
+          ),
+        ),
+        StreamBuilder<QuerySnapshot>(
+          stream: seasons,
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return const Text('Something went wrong');
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text("Waiting");
+            }
+
+            final data = snapshot.requireData;
+
+            List<Games> test = [];
+
+            var latest_season = data.docs[0]['games'];
+
+            //print(sortedMap);
+
+            //test.add(Text('$latest_season'));
+            for (var doc in latest_season) {
+              test.add(
+                Games(
+                  current_score_team_1: doc["current_score_team_1"],
+                  current_score_team_2: doc["current_score_team_2"],
+                  date_time: doc["date_time"],
+                  game_number: doc["game_number"],
+                  livestream_url: doc["livestream_url"],
+                  team_1_id: doc["team_1_id"],
+                  team_2_id: doc["team_2_id"],
+                ),
+              );
+            }
+
+            // var teams = doc["teams"];
+
+            // return Column(
+            //   children: test,
+            // );
+
+            // for (var game in test) {
+            //   print(game.game_number);
+            // }
+
+            //print(test[0].date_time);
+
+            test.sort(
+              (a, b) {
+                return a.game_number.compareTo(b.game_number);
+              },
+            );
+
+            // print(test[0].date_time);
+
+            for (var game in test) {
+              print(game.game_number);
+              //cards.add();
+            }
+
+            return Text(test[0].date_time.toString());
+          },
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  print("Tappped");
+                  //test();
+                },
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: seasons,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return const Text('Something went wrong');
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text("Waiting");
+                    }
+
+                    final data = snapshot.requireData;
+
+                    List<Games> test = [];
+
+                    var latest_season = data.docs[0]['games'];
+
+                    //print(sortedMap);
+
+                    //test.add(Text('$latest_season'));
+                    for (var doc in latest_season) {
+                      test.add(
+                        Games(
+                          current_score_team_1: doc["current_score_team_1"],
+                          current_score_team_2: doc["current_score_team_2"],
+                          date_time: doc["date_time"],
+                          game_number: doc["game_number"],
+                          livestream_url: doc["livestream_url"],
+                          team_1_id: doc["team_1_id"],
+                          team_2_id: doc["team_2_id"],
+                        ),
+                      );
+                    }
+
+                    // var teams = doc["teams"];
+
+                    // return Column(
+                    //   children: test,
+                    // );
+
+                    // for (var game in test) {
+                    //   print(game.game_number);
+                    // }
+
+                    //print(test[0].date_time);
+
+                    test.sort(
+                      (a, b) {
+                        return a.game_number.compareTo(b.game_number);
+                      },
+                    );
+
+                    // print(test[0].date_time);
+
+                    List<Widget> cards = [];
+
+                    for (var game in test) {
+                      print(game.game_number);
+                      cards.add();
+                    }
+
+                    return Text(test[0].date_time.toString());
+                  },
+                ),
+                // StreamBuilder<QuerySnapshot>(
+                //   stream: cards,
+                //   builder: (BuildContext context,
+                //       AsyncSnapshot<QuerySnapshot> snapshot) {
+                //     if (snapshot.hasError) {
+                //       return const Text('Something went wrong');
+                //     }
+                //     if (snapshot.connectionState == ConnectionState.waiting) {
+                //       return Text("Waiting");
+                //     }
+
+                //     final data = snapshot.requireData;
+
+                //     return Text(data.toString());
+                //   Card(
+                //     shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(10.0),
+                //     ),
+                //     elevation: 5,
+                //     color: Colors.red,
+                //     child: Padding(
+                //       padding: const EdgeInsets.all(15.0),
+                //       child: Column(
+                //         mainAxisSize: MainAxisSize.min,
+                //         children: [
+                //           Row(
+                //             mainAxisSize: MainAxisSize.min,
+                //             children: <Widget>[
+                //               const Text('Game 1'),
+                //               const SizedBox(
+                //                 width: 20,
+                //               ),
+                //               const Text("11/08/2022, 18:30")
+                //             ],
+                //           ),
+                //           const SizedBox(
+                //             height: 10,
+                //           ),
+                //           Row(
+                //             children: [
+                //               Column(
+                //                 mainAxisSize: MainAxisSize.max,
+                //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //                 children: [
+                //                   Image.network(
+                //                     "https://cdn.britannica.com/27/4227-004-32423B42/Flag-South-Africa.jpg",
+                //                     scale: 10,
+                //                   ),
+                //                   const Text("South Africa"),
+                //                 ],
+                //               ),
+                //               const SizedBox(
+                //                 width: 10,
+                //               ),
+                //               const Text(
+                //                 "6:1",
+                //                 style: const TextStyle(fontSize: 20),
+                //               ),
+                //               const SizedBox(
+                //                 width: 10,
+                //               ),
+                //               Column(
+                //                 mainAxisSize: MainAxisSize.max,
+                //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //                 children: [
+                //                   Image.network(
+                //                     "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/255px-Flag_of_Italy.svg.png",
+                //                     scale: 3,
+                //                   ),
+                //                   const Text("Italy"),
+                //                 ],
+                //               ),
+                //             ],
+                //           ),
+                //           const SizedBox(
+                //             height: 10,
+                //           ),
+                //           const Text("Buy Tickets"),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // },
+              ),
+              GestureDetector(
+                onTap: () {
+                  print("Tappped");
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  elevation: 5,
+                  color: Colors.red,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            const Text('Game 2'),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            const Text("11/08/2022, 18:30")
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image.network(
+                                  "https://cdn.britannica.com/27/4227-004-32423B42/Flag-South-Africa.jpg",
+                                  scale: 10,
+                                ),
+                                const Text("South Africa"),
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              "6:1",
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image.network(
+                                  "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/255px-Flag_of_Italy.svg.png",
+                                  scale: 3,
+                                ),
+                                const Text("Italy"),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text("Watch Live"),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  print("Tappped");
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  elevation: 5,
+                  color: Colors.red,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            const Text('Game 3'),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            const Text("11/08/2022, 18:30")
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image.network(
+                                  "https://cdn.britannica.com/27/4227-004-32423B42/Flag-South-Africa.jpg",
+                                  scale: 10,
+                                ),
+                                const Text("South Africa"),
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              "6:1",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image.network(
+                                  "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/255px-Flag_of_Italy.svg.png",
+                                  scale: 3,
+                                ),
+                                const Text("Italy"),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text("Watch Live"),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: spacer,
+        ),
+        const Text(
+          "News",
+          style: const TextStyle(
+            fontSize: 20,
+          ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              // GestureDetector(
+              //   onTap: () {
+              //     print("Tappped");
+              //   },
+              //   child: Card(
+              //     elevation: 20,
+              //     color: Colors.red,
+              //     child: Padding(
+              //       padding: const EdgeInsets.all(15.0),
+              //       child: Column(
+              //         mainAxisSize: MainAxisSize.min,
+              //         children: [
+              //           Row(
+              //             mainAxisSize: MainAxisSize.min,
+              //             children: <Widget>[
+              //               const Text('Game 1'),
+              //               SizedBox(
+              //                 width: 20,
+              //               ),
+              //               Text("11/08/2022, 18:30")
+              //             ],
+              //           ),
+              //           SizedBox(
+              //             height: 10,
+              //           ),
+              //           Row(
+              //             children: [
+              //               Column(
+              //                 mainAxisSize: MainAxisSize.max,
+              //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //                 children: [
+              //                   Image.network(
+              //                     "https://cdn.britannica.com/27/4227-004-32423B42/Flag-South-Africa.jpg",
+              //                     scale: 10,
+              //                   ),
+              //                   Text("South Africa"),
+              //                 ],
+              //               ),
+              //               SizedBox(
+              //                 width: 10,
+              //               ),
+              //               Text(
+              //                 "6:1",
+              //                 style: TextStyle(fontSize: 20),
+              //               ),
+              //               SizedBox(
+              //                 width: 10,
+              //               ),
+              //               Column(
+              //                 mainAxisSize: MainAxisSize.max,
+              //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //                 children: [
+              //                   Image.network(
+              //                     "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/255px-Flag_of_Italy.svg.png",
+              //                     scale: 3,
+              //                   ),
+              //                   Text("Italy"),
+              //                 ],
+              //               ),
+              //             ],
+              //           ),
+              //           SizedBox(
+              //             height: 10,
+              //           ),
+              //           Text("Watch Live"),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // GestureDetector(
+              //   onTap: () {
+              //     print("Tappped");
+              //   },
+              //   child: Card(
+              //     semanticContainer: true,
+              //     clipBehavior: Clip.antiAliasWithSaveLayer,
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(10.0),
+              //     ),
+              //     elevation: 5,
+              //     margin: const EdgeInsets.all(10),
+              //     child: Stack(
+              //       children: [
+              //         ShaderMask(
+              //           shaderCallback: (rect) {
+              //             return const LinearGradient(
+              //               begin: Alignment.topCenter,
+              //               end: Alignment.bottomCenter,
+              //               colors: [Colors.transparent, Colors.black],
+              //             ).createShader(
+              //                 Rect.fromLTRB(0, 0, rect.width, rect.height - 10));
+              //           },
+              //           blendMode: BlendMode.darken,
+              //           child: Image.network(
+              //             height: 200,
+              //             width: 300,
+              //             'https://placeimg.com/640/480/any',
+              //             fit: BoxFit.fill,
+              //           ),
+              //         ),
+              //         // Image.network(
+              //         //   height: 200,
+              //         //   width: 300,
+              //         //   'https://placeimg.com/640/480/any',
+              //         //   fit: BoxFit.fill,
+              //         // ),
+              //         const Positioned.fill(
+              //           top: 10,
+              //           left: 10,
+              //           child: Text(
+              //             "10 November 2022, 16:55pm",
+              //             style: const TextStyle(
+              //                 fontSize: 20,
+              //                 backgroundColor: Colors.black,
+              //                 color: Colors.white,
+              //                 leadingDistribution: TextLeadingDistribution.even),
+              //           ),
+              //         ),
+              //         const Positioned.fill(
+              //           top: 120,
+              //           left: 10,
+              //           child: Text(
+              //             "Test",
+              //             style: const TextStyle(
+              //                 fontSize: 20,
+              //                 color: Colors.white,
+              //                 leadingDistribution: TextLeadingDistribution.even),
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              GestureDetector(
+                onTap: () {
+                  print("Tappped");
+                  showModalBottomSheet<void>(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        color: Colors.amber,
+                        child: FractionallySizedBox(
+                          heightFactor: 0.85,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                const Text('Modal BottomSheet'),
+                                ElevatedButton(
+                                  child: const Text('Close BottomSheet'),
+                                  onPressed: () => Navigator.pop(context),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Card(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  elevation: 5,
+                  margin: const EdgeInsets.all(10),
+                  child: Column(children: [
+                    ShaderMask(
+                      shaderCallback: (rect) {
+                        return const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.transparent, Colors.black],
+                        ).createShader(
+                            Rect.fromLTRB(0, 0, rect.width, rect.height - 10));
+                      },
+                      blendMode: BlendMode.darken,
+                      child: Image.network(
+                        height: 128,
+                        width: card_width,
+                        'https://placeimg.com/1920/1080/any',
+                        fit: BoxFit.cover,
+                        scale: 10,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      width: card_width,
+                      child: Text(
+                        "This is a long text asd asda sd asdasdas asdas adasda dasd asdas adsda dasdasd asdasdadsadas ",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        maxLines: 3,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    SizedBox(
+                      child: Text(
+                        "10 November 2022, 4:20pm",
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                  ]),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: spacer,
+        ),
+        const Text(
+          "Season Statistcs",
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  print("Tappped");
+                },
+                child: Card(
+                  elevation: 5,
+                  color: Colors.red,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            const Text('Game 1'),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            const Text("11/08/2022, 18:30")
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image.network(
+                                  "https://cdn.britannica.com/27/4227-004-32423B42/Flag-South-Africa.jpg",
+                                  scale: 10,
+                                ),
+                                const Text("South Africa"),
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              "6:1",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image.network(
+                                  "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/255px-Flag_of_Italy.svg.png",
+                                  scale: 3,
+                                ),
+                                const Text("Italy"),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text("Watch Live"),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class Games {
+  String current_score_team_1,
+      current_score_team_2,
+      game_number,
+      livestream_url,
+      team_1_id,
+      team_2_id;
+  Timestamp date_time;
+
+  Games(
+      {required this.current_score_team_1,
+      required this.current_score_team_2,
+      required this.date_time,
+      required this.game_number,
+      required this.livestream_url,
+      required this.team_1_id,
+      required this.team_2_id});
+}

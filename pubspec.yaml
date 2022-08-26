@@ -39,6 +39,12 @@ dependencies:
   flutter_signin_button: ^2.0.0
   google_sign_in: ^5.4.1
   email_validator: ^2.1.17
+  cached_network_image: ^3.2.1
+  firebase_database: ^9.1.2
+  google_fonts: ^3.0.1
+  cloud_firestore: ^3.4.5
+  blinking_text: ^1.0.2
+  url_launcher: ^6.1.5
 
 dev_dependencies:
   flutter_test:
