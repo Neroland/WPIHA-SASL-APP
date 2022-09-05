@@ -1,0 +1,372 @@
+ Widget liveGame() {
+      double scoreButtonTextSize = 30;
+      return Padding(
+        padding: EdgeInsets.all(10),
+        child: FractionallySizedBox(
+          widthFactor: 1,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: Color.fromARGB(255, 158, 105, 255),
+              borderRadius: BorderRadius.circular(Constants.padding),
+              // boxShadow: [
+              //   BoxShadow(
+              //       color: Colors.black,
+              //       offset: Offset(0, 10),
+              //       blurRadius: 10),
+              // ]
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 30, 10, 10),
+                  child: BlinkText(
+                    duration: Duration(seconds: 1),
+                    'LIVE MATCH',
+                    style: TextStyle(fontSize: 24.0, color: Colors.red),
+                    endColor: Colors.orange,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 40),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CachedNetworkImage(
+                            height: 60,
+                            width: 60,
+                            imageUrl:
+                                "https://scontent-jnb1-1.xx.fbcdn.net/v/t1.18169-9/13051687_1000213036735333_100597284100935242_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=fKBMG9czaGIAX_6m5ky&_nc_ht=scontent-jnb1-1.xx&oh=00_AT-gX1i96mhdkReaNAeJ9wOSWsPhlAY3LvBOF5cnGRTgcw&oe=6329D77E",
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    CircularProgressIndicator(
+                                        value: downloadProgress.progress),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              // minimumSize: Size.fromHeight(50),
+                              primary: Colors.green,
+                            ),
+                            onPressed: (() {
+                              print("Team 1 Score ++");
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return CustomDialogBox(
+                                    profilePicture: false,
+                                    descriptions:
+                                        "Are you sure you want to add a goal to $team_1_name?",
+                                    firstButtonText: "Cancel",
+                                    fromParent: () => setState(() {
+                                      _team_1_score++;
+                                      Utils.showSnackBar(
+                                          "Goal added to $team_1_name",
+                                          Colors.green.shade800);
+                                    }),
+                                    secondButtonText: "Confirm",
+                                    title: "Add a goal?",
+                                  );
+                                },
+                              );
+                            }),
+                            child: Text(
+                              "+",
+                              style: TextStyle(fontSize: scoreButtonTextSize),
+                            ),
+                          ),
+                          Text(
+                            _team_1_score.toString(),
+                            style: TextStyle(fontSize: 40),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              // minimumSize: Size.fromHeight(50),
+                              primary: Colors.red,
+                            ),
+                            onPressed: (() {
+                              print("Team 1 Score --");
+                              if (_team_2_score != 0) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return CustomDialogBox(
+                                      profilePicture: false,
+                                      descriptions:
+                                          "Are you sure you want to minus a goal from $team_1_name??",
+                                      firstButtonText: "Cancel",
+                                      fromParent: () => setState(() {
+                                        _team_2_score--;
+                                        Utils.showSnackBar("Goal subtracted",
+                                            Colors.orange.shade800);
+                                      }),
+                                      secondButtonText: "Confirm",
+                                      title: "Minus a goal?",
+                                    );
+                                  },
+                                );
+                              }
+                            }),
+                            child: Text(
+                              "-",
+                              style: TextStyle(fontSize: scoreButtonTextSize),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              "Cape Town Kings",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "VS",
+                            style: TextStyle(fontSize: 40),
+                          )
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CachedNetworkImage(
+                            height: 60,
+                            width: 60,
+                            imageUrl:
+                                "https://scontent-jnb1-1.xx.fbcdn.net/v/t1.18169-9/13051687_1000213036735333_100597284100935242_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=fKBMG9czaGIAX_6m5ky&_nc_ht=scontent-jnb1-1.xx&oh=00_AT-gX1i96mhdkReaNAeJ9wOSWsPhlAY3LvBOF5cnGRTgcw&oe=6329D77E",
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    CircularProgressIndicator(
+                                        value: downloadProgress.progress),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              // minimumSize: Size.fromHeight(50),
+                              primary: Colors.green,
+                            ),
+                            onPressed: (() {
+                              print("Team 2 Score ++");
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return CustomDialogBox(
+                                    profilePicture: false,
+                                    descriptions:
+                                        "Are you sure you want to add a goal to $team_2_name?",
+                                    firstButtonText: "Cancel",
+                                    fromParent: () => setState(() {
+                                      _team_2_score++;
+                                      Utils.showSnackBar(
+                                          "Goal added", Colors.green.shade800);
+                                    }),
+                                    secondButtonText: "Confirm",
+                                    title: "Add a goal?",
+                                  );
+                                },
+                              );
+                            }),
+                            child: Text(
+                              "+",
+                              style: TextStyle(fontSize: scoreButtonTextSize),
+                            ),
+                          ),
+                          Text(
+                            _team_2_score.toString(),
+                            style: TextStyle(fontSize: 40),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              // minimumSize: Size.fromHeight(50),
+                              primary: Colors.red,
+                            ),
+                            onPressed: (() {
+                              print("Team 2 Score --");
+                              if (_team_2_score != 0) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return CustomDialogBox(
+                                      profilePicture: false,
+                                      descriptions:
+                                          "Are you sure you want to minus a goal from $team_2_name??",
+                                      firstButtonText: "Cancel",
+                                      fromParent: () => setState(() {
+                                        _team_2_score--;
+                                        Utils.showSnackBar("Goal subtracted",
+                                            Colors.orange.shade800);
+                                      }),
+                                      secondButtonText: "Confirm",
+                                      title: "Minus a goal?",
+                                    );
+                                  },
+                                );
+                              }
+                            }),
+                            child: Text(
+                              "-",
+                              style: TextStyle(fontSize: scoreButtonTextSize),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              "Pretoria Capitals",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    // class addAdmin extends StatefulWidget {
+//   const addAdmin({Key? key}) : super(key: key);
+
+//   @override
+//   State<addAdmin> createState() => _addAdminState();
+// }
+
+// class _addAdminState extends State<addAdmin> {
+//   final formKey = GlobalKey<FormState>();
+//   final emailController = TextEditingController();
+//   @override
+//   void dispose() {
+//     emailController.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: SingleChildScrollView(
+//         scrollDirection: Axis.vertical,
+//         child: Column(
+//           children: [
+//             Form(
+//               key: formKey,
+//               child: FractionallySizedBox(
+//                 widthFactor: 0.8,
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.center,
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     spacer(10),
+//                     Text(
+//                       'Add Admin',
+//                       textAlign: TextAlign.center,
+//                       style: TextStyle(fontSize: 24),
+//                     ),
+//                     spacer(20),
+//                     TextFormField(
+//                       controller: emailController,
+//                       cursorColor: Colors.white,
+//                       textInputAction: TextInputAction.done,
+//                       decoration: InputDecoration(labelText: "Email"),
+//                       autovalidateMode: AutovalidateMode.onUserInteraction,
+//                       validator: (email) =>
+//                           email != null && !EmailValidator.validate(email)
+//                               ? 'Please enter a valid email'
+//                               : null,
+//                     ),
+//                     SizedBox(
+//                       height: 20,
+//                     ),
+//                     ElevatedButton.icon(
+//                       style: ElevatedButton.styleFrom(
+//                         minimumSize: Size.fromHeight(50),
+//                         primary: Colors.red,
+//                       ),
+//                       icon: Icon(Icons.email_outlined),
+//                       label: Text(
+//                         "Add Email",
+//                         style: TextStyle(fontSize: 20),
+//                       ),
+//                       onPressed: () {
+//                         //showAlertDialog(context);
+
+//                         if (emailController.text.trim().isNotEmpty) {
+//                           //emailController.clear();
+//                           showDialog(
+//                               context: context,
+//                               builder: (BuildContext context) {
+//                                 return CustomDialogBox(
+//                                     title: "Are you sure?",
+//                                     descriptions:
+//                                         "It seems like you are wanting to add ${emailController.text.trim()} as an admin... please confirm this is correct.",
+//                                     secondButtonText: "Confirm",
+//                                     firstButtonText: "Cancel",
+//                                     fromParent: () => addAdminToDB(
+//                                         emailController.text.trim()));
+//                               });
+//                         }
+//                       },
+//                     ),
+//                     spacer(20),
+//                     Container(
+//                       width: 150,
+//                       decoration: BoxDecoration(
+//                         shape: BoxShape.rectangle,
+//                         color: Colors.white,
+//                         borderRadius: BorderRadius.circular(Constants.padding),
+//                         // boxShadow: [
+//                         //   BoxShadow(
+//                         //       color: Colors.black,
+//                         //       offset: Offset(0, 10),
+//                         //       blurRadius: 10),
+//                         // ]
+//                       ),
+//                       child: ElevatedButton.icon(
+//                         style: ElevatedButton.styleFrom(
+//                           minimumSize: Size.fromHeight(50),
+//                           primary: Colors.red,
+//                         ),
+//                         icon: Icon(Icons.arrow_back),
+//                         label: Text(
+//                           "Back",
+//                           style: TextStyle(fontSize: 24),
+//                         ),
+//                         onPressed: () {
+//                           print("Back pressed");
+//                         },
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//             // CustomDialogBox(
+//             //   title: "title",
+//             //   descriptions: "descriptions",
+//             //   text: "text",
+//             //   fromParent: () => test(),
+//             // )
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+//void test() {
+// print("It worked!");
+//}

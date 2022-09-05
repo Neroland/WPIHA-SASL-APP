@@ -83,11 +83,15 @@ class teams extends StatelessWidget {
               //print(doc);
               teamsList.add(
                 Teams(
-                    team_name: doc["name"],
-                    team_id: doc["team_id"],
-                    team_logo_url: doc["team_logo_url"],
-                    club_info: doc["club_info"],
-                    team_jersey_picture_url: doc["team_jersey_picture_url"]),
+                  team_name: doc["team_name"],
+                  team_id: doc["team_id"],
+                  team_logo_url: doc["team_logo_url"],
+                  club_info: doc["club_info"],
+                  team_jersey_picture_url: doc["team_jersey_picture_url"],
+                  assistant_coach: doc["assistant_coach"],
+                  head_coach: doc["head_coach"],
+                  team_manager: doc["team_manager"],
+                ),
               );
             }
             for (var doc in players_data) {
@@ -119,6 +123,9 @@ class teams extends StatelessWidget {
             var defenceCount = "0";
             var forwardCount = "0";
             var goaltenderCount = "0";
+            var teamManager = "None",
+                headCoach = "None",
+                assistantCoach = "None";
 
             countTeam.forEach((element) {
               if (!countPlayersInTeam.containsKey(element)) {
@@ -170,6 +177,9 @@ class teams extends StatelessWidget {
                     countPositionsInTeam["${team.team_id}_Goaltender"]
                         .toString();
               }
+              teamManager = team.team_manager;
+              headCoach = team.head_coach;
+              assistantCoach = team.assistant_coach;
 
               clubInfoMap = team.club_info;
               // clubInfo.add(ClubInfo(
@@ -267,8 +277,19 @@ class teams extends StatelessWidget {
                                     color: Colors.grey,
                                   ),
                                   spacer(spacerSize / 3),
-                                  infoRow(
-                                      "Number of Goaltenders", goaltenderCount),
+                                  infoRow("Head Coach", headCoach),
+                                  spacer(spacerSize / 3),
+                                  Container(
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
+                                  infoRow("Assistant Coach", assistantCoach),
+                                  spacer(spacerSize / 3),
+                                  Container(
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
+                                  infoRow("Team Manager", teamManager),
                                 ],
                               ),
                             ),
@@ -401,27 +422,30 @@ class teams extends StatelessWidget {
                               ],
                             ),
                             spacer(15),
-                            Text("Jerseys"),
-                            spacer(15),
-                            Container(
-                              width: 900,
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              child: CachedNetworkImage(
-                                height: 200,
-                                imageUrl: team.team_jersey_picture_url,
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) =>
-                                        CircularProgressIndicator(
-                                            value: downloadProgress.progress),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
+                            if (team.team_jersey_picture_url.isNotEmpty)
+                              Text("Jerseys"),
+                            if (team.team_jersey_picture_url.isNotEmpty)
+                              spacer(15),
+                            if (team.team_jersey_picture_url.isNotEmpty)
+                              Container(
+                                width: 900,
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                child: CachedNetworkImage(
+                                  height: 200,
+                                  imageUrl: team.team_jersey_picture_url,
+                                  progressIndicatorBuilder:
+                                      (context, url, downloadProgress) =>
+                                          CircularProgressIndicator(
+                                              value: downloadProgress.progress),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),

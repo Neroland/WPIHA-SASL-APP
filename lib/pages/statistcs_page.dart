@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:sasl_app/widgets/classes.dart';
 import 'package:sasl_app/widgets/reusable.dart';
 
-final Stream<QuerySnapshot> seasons =
+Stream<QuerySnapshot> seasons =
     FirebaseFirestore.instance.collection("seasons").snapshots();
 
 // Future<dynamic> statistics() async {
@@ -31,7 +31,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
           child: Column(
             children: [
               StreamBuilder<QuerySnapshot>(
@@ -79,12 +79,15 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   for (var doc in teams_data) {
                     teamsList.add(
                       Teams(
-                          team_name: doc["name"],
-                          team_id: doc["team_id"],
-                          team_logo_url: doc["team_logo_url"],
-                          club_info: doc["club_info"],
-                          team_jersey_picture_url:
-                              doc["team_jersey_picture_url"]),
+                        team_name: doc["team_name"],
+                        team_id: doc["team_id"],
+                        team_logo_url: doc["team_logo_url"],
+                        club_info: doc["club_info"],
+                        team_jersey_picture_url: doc["team_jersey_picture_url"],
+                        assistant_coach: doc["assistant_coach"],
+                        head_coach: doc["head_coach"],
+                        team_manager: doc["team_manager"],
+                      ),
                     );
                   }
 
@@ -182,51 +185,72 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       DataRow(
                         cells: [
                           DataCell(
-                            Text(count.toString()),
+                            Center(
+                              child: Text(count.toString()),
+                            ),
                           ),
                           DataCell(
                             Center(
-                              child: CachedNetworkImage(
-                                imageUrl: profilePicURL,
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) =>
-                                        CircularProgressIndicator(
-                                            value: downloadProgress.progress),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                                height: 40,
+                              child: CircleAvatar(
+                                radius: 20,
+                                backgroundImage: CachedNetworkImageProvider(
+                                  profilePicURL,
+                                ),
+                                //   CachedNetworkImage(
+                                // imageUrl: profilePicURL,
+                                // progressIndicatorBuilder:
+                                //     (context, url, downloadProgress) =>
+                                //         CircularProgressIndicator(
+                                //             value: downloadProgress.progress),
+                                // errorWidget: (context, url, error) =>
+                                //     const Icon(Icons.error),
+                                // height: 40,
                               ),
                             ),
                           ),
                           DataCell(
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "${player.player_first_name}\n${player.player_last_name}",
-                                  textAlign: TextAlign.center,
-                                ),
-                                Text(
-                                  player.player_position,
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                              ],
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "${player.player_first_name}\n${player.player_last_name}",
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    player.player_position,
+                                    style: TextStyle(fontSize: 10),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           DataCell(
-                            Text(
-                              player.player_gp,
+                            Center(
+                              child: Text(
+                                player.player_gp,
+                              ),
                             ),
                           ),
                           DataCell(
-                            Text(player.player_g),
+                            Center(
+                              child: Text(player.player_g),
+                            ),
                           ),
                           DataCell(
-                            Text(player.player_a),
+                            Center(
+                              child: Text(player.player_a),
+                            ),
                           ),
-                          DataCell(Text((int.parse(player.player_a) +
-                                  int.parse(player.player_g))
-                              .toString())),
+                          DataCell(
+                            Center(
+                              child: Text(
+                                (int.parse(player.player_a) +
+                                        int.parse(player.player_g))
+                                    .toString(),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     );
@@ -284,74 +308,77 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       spacer(10),
                       Text("Player Statistics"),
                       spacer(20),
-                      DataTable(
-                        sortColumnIndex: 0,
-                        sortAscending: true,
-                        dividerThickness: 2,
-                        columnSpacing: 25,
-                        dataRowHeight: 60,
-                        headingRowHeight: 30,
-                        horizontalMargin: 10,
-                        columns: const [
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                "Rank",
-                                textAlign: TextAlign.center,
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          sortColumnIndex: 0,
+                          sortAscending: true,
+                          dividerThickness: 2,
+                          columnSpacing: 20,
+                          dataRowHeight: 60,
+                          headingRowHeight: 30,
+                          horizontalMargin: 10,
+                          columns: const [
+                            DataColumn(
+                              label: Expanded(
+                                child: Text(
+                                  "Rank",
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              numeric: true,
+                            ),
+                            DataColumn(
+                              label: Expanded(
+                                child: Text(
+                                  "Picture",
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
-                            numeric: true,
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                "Picture",
-                                textAlign: TextAlign.center,
+                            DataColumn(
+                              label: Expanded(
+                                child: Text(
+                                  "Player",
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                "Player",
-                                textAlign: TextAlign.center,
+                            DataColumn(
+                              label: Expanded(
+                                child: Text(
+                                  "GP",
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                "GP",
-                                textAlign: TextAlign.center,
+                            DataColumn(
+                              label: Expanded(
+                                child: Text(
+                                  "G",
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                "G",
-                                textAlign: TextAlign.center,
+                            DataColumn(
+                              label: Expanded(
+                                child: Text(
+                                  "A",
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                "A",
-                                textAlign: TextAlign.center,
+                            DataColumn(
+                              label: Expanded(
+                                child: Text(
+                                  "PTS",
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                "PTS",
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ],
-                        rows: playerRows,
+                          ],
+                          rows: playerRows,
+                        ),
                       ),
                     ],
                   );

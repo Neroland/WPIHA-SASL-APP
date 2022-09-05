@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,9 @@ import 'package:sasl_app/pages/statistcs_page.dart';
 import 'package:sasl_app/pages/teams_page.dart';
 import 'package:sasl_app/pages/admin_page.dart';
 
+Stream<QuerySnapshot> admins =
+    FirebaseFirestore.instance.collection("backend_stuff").snapshots();
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -18,19 +23,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Stream<QuerySnapshot> admins =
-      FirebaseFirestore.instance.collection("backend_stuff").snapshots();
-
   User? user = FirebaseAuth.instance.currentUser;
 
-  bool admin = false;
-  bool previouslyAdmin = false;
-  int _currentIndex = 6;
-  int _currentMenuTitle = 6;
+  int _currentIndex = 0;
+  int _currentMenuTitle = 0;
 
   List<Widget> body = [
     mainMenuPage(),
-    teams(),
+    const teams(),
     games(),
     standings(),
     // FutureBuilder(
@@ -39,9 +39,9 @@ class _HomePageState extends State<HomePage> {
     //     return Test(snapshot.data);
     //   }),
     // ),
-    StatisticsPage(),
+    const StatisticsPage(),
     profile(),
-    adminPage(),
+    const adminPage(),
   ];
 
   List<Text> menuTitles = [
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               width: 100,
               height: 100,
-              child: CircularProgressIndicator(
+              child: const CircularProgressIndicator(
                 strokeWidth: 10,
                 color: Colors.red,
                 backgroundColor: Colors.blue,
@@ -117,8 +117,10 @@ class _HomePageState extends State<HomePage> {
         //var userData = data.docs as Map<String, dynamic>;
         //print(data);
         //print(user?.uid);
+        bool admin = false;
+        bool previouslyAdmin = false;
         if (data.contains(user?.email)) {
-          //print("YES");
+          // print("YES");
 
           admin = true;
           previouslyAdmin = true;
@@ -138,154 +140,170 @@ class _HomePageState extends State<HomePage> {
         //print("YES");
         //}
         try {
-          return Scaffold(
-            appBar: AppBar(
-              title: menuTitles[_currentMenuTitle],
-              centerTitle: true,
-            ),
-            drawer: Drawer(
-              // Add a ListView to the drawer. This ensures the user can scroll
-              // through the options in the drawer if there isn't enough vertical
-              // space to fit everything.
-              child: ListView(
-                // Important: Remove any padding from the ListView.
-                padding: EdgeInsets.zero,
-                children: [
-                  const DrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
+          return WillPopScope(
+            onWillPop: () {
+              if (_currentIndex != 0) {
+                try {
+                  setState(() {
+                    _currentIndex = 0;
+                  });
+                } catch (e) {
+                  print(e);
+                }
+                throw {};
+              } else {
+                exit(0);
+              }
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                title: menuTitles[_currentMenuTitle],
+                centerTitle: true,
+              ),
+              drawer: Drawer(
+                // Add a ListView to the drawer. This ensures the user can scroll
+                // through the options in the drawer if there isn't enough vertical
+                // space to fit everything.
+                child: ListView(
+                  // Important: Remove any padding from the ListView.
+                  padding: EdgeInsets.zero,
+                  children: [
+                    const DrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                      ),
+                      child: Text('Drawer Header'),
                     ),
-                    child: Text('Drawer Header'),
-                  ),
-                  ListTile(
-                    title: const Text('Home'),
-                    onTap: () {
-                      // Update the state of the app.
-                      // ...
-                      setState(() {
-                        _currentIndex = 0;
-                        _currentMenuTitle = 0;
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Teams'),
-                    onTap: () {
-                      // Update the state of the app.
-                      // ...
-                      setState(() {
-                        _currentIndex = 1;
-                        _currentMenuTitle = 1;
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Games'),
-                    onTap: () {
-                      // Update the state of the app.
-                      // ...
-                      setState(() {
-                        _currentIndex = 2;
-                        _currentMenuTitle = 2;
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Standings'),
-                    onTap: () {
-                      // Update the state of the app.
-                      // ...
-                      setState(() {
-                        _currentIndex = 3;
-                        _currentMenuTitle = 3;
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Statistics'),
-                    onTap: () {
-                      // Update the state of the app.
-                      // ...
-                      setState(() {
-                        _currentIndex = 4;
-                        _currentMenuTitle = 4;
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Settings'),
-                    onTap: () {
-                      // Update the state of the app.
-                      // ...
-                      setState(() {
-                        _currentIndex = 5;
-                        _currentMenuTitle = 5;
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
-                  const ListTile(),
-                  ListTile(
-                    title: Row(
-                      children: [
-                        const Icon(Icons.person),
-                        const Text(" Log Out"),
-                      ],
+                    ListTile(
+                      title: const Text('Home'),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                        setState(() {
+                          _currentIndex = 0;
+                          _currentMenuTitle = 0;
+                        });
+                        Navigator.pop(context);
+                      },
                     ),
-                    onTap: () {
-                      GoogleSignIn().signOut();
-                      FirebaseAuth.instance.signOut();
-                    },
-                  )
+                    ListTile(
+                      title: const Text('Teams'),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                        setState(() {
+                          _currentIndex = 1;
+                          _currentMenuTitle = 1;
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Games'),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                        setState(() {
+                          _currentIndex = 2;
+                          _currentMenuTitle = 2;
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Standings'),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                        setState(() {
+                          _currentIndex = 3;
+                          _currentMenuTitle = 3;
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Statistics'),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                        setState(() {
+                          _currentIndex = 4;
+                          _currentMenuTitle = 4;
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Settings'),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                        setState(() {
+                          _currentIndex = 5;
+                          _currentMenuTitle = 5;
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                    const ListTile(),
+                    ListTile(
+                      title: Row(
+                        children: [
+                          const Icon(Icons.person),
+                          const Text(" Log Out"),
+                        ],
+                      ),
+                      onTap: () {
+                        GoogleSignIn().signOut();
+                        FirebaseAuth.instance.signOut();
+                      },
+                    )
+                  ],
+                ),
+              ),
+              body: body[_currentIndex],
+              bottomNavigationBar: BottomNavigationBar(
+                backgroundColor: Colors.black,
+                unselectedItemColor: Colors.black,
+                fixedColor: Colors.red,
+                currentIndex: _currentIndex,
+                onTap: (int newIndex) {
+                  setState(() {
+                    _currentIndex = newIndex;
+                    _currentMenuTitle = newIndex;
+                  });
+                },
+                items: [
+                  const BottomNavigationBarItem(
+                    label: 'Home',
+                    icon: Icon(Icons.home),
+                  ),
+                  const BottomNavigationBarItem(
+                    label: 'Teams',
+                    icon: const Icon(Icons.people),
+                  ),
+                  const BottomNavigationBarItem(
+                    label: 'Games',
+                    icon: const Icon(Icons.sports_hockey),
+                  ),
+                  const BottomNavigationBarItem(
+                    label: 'Standings',
+                    icon: Icon(Icons.leaderboard_outlined),
+                  ),
+                  const BottomNavigationBarItem(
+                    label: 'Statistics',
+                    icon: Icon(Icons.show_chart),
+                  ),
+                  const BottomNavigationBarItem(
+                    label: 'Settings',
+                    icon: const Icon(Icons.settings),
+                  ),
+                  if (admin)
+                    const BottomNavigationBarItem(
+                        label: 'Admin', icon: Icon(Icons.person)),
                 ],
               ),
-            ),
-            body: body[_currentIndex],
-            bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Colors.black,
-              unselectedItemColor: Colors.black,
-              fixedColor: Colors.red,
-              currentIndex: _currentIndex,
-              onTap: (int newIndex) {
-                setState(() {
-                  _currentIndex = newIndex;
-                  _currentMenuTitle = newIndex;
-                });
-              },
-              items: [
-                BottomNavigationBarItem(
-                  label: 'Home',
-                  icon: Icon(Icons.home),
-                ),
-                BottomNavigationBarItem(
-                  label: 'Teams',
-                  icon: Icon(Icons.people),
-                ),
-                BottomNavigationBarItem(
-                  label: 'Games',
-                  icon: Icon(Icons.sports_hockey),
-                ),
-                BottomNavigationBarItem(
-                  label: 'Standings',
-                  icon: Icon(Icons.leaderboard_outlined),
-                ),
-                BottomNavigationBarItem(
-                  label: 'Statistics',
-                  icon: Icon(Icons.show_chart),
-                ),
-                BottomNavigationBarItem(
-                  label: 'Settings',
-                  icon: Icon(Icons.settings),
-                ),
-                if (admin)
-                  BottomNavigationBarItem(
-                      label: 'Admin', icon: Icon(Icons.person)),
-              ],
             ),
           );
         } catch (e) {
@@ -455,7 +473,7 @@ class _HomePageState extends State<HomePage> {
               height: 100,
               color: Colors.red,
               child: TextButton(
-                child: Text(
+                child: const Text(
                   "You were removed as admin, tap to reload",
                   style: TextStyle(color: Colors.white),
                 ),

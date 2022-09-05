@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sasl_app/constants.dart';
 import 'package:sasl_app/utils.dart';
@@ -6,6 +7,7 @@ import 'package:sasl_app/utils.dart';
 class CustomDialogBox extends StatefulWidget {
   final String title, descriptions, firstButtonText, secondButtonText;
   final Function fromParent;
+  final bool profilePicture;
   // final Image img;
 
   const CustomDialogBox(
@@ -13,7 +15,8 @@ class CustomDialogBox extends StatefulWidget {
       required this.descriptions,
       required this.firstButtonText,
       required this.secondButtonText,
-      required this.fromParent()});
+      required this.fromParent(),
+      required this.profilePicture});
 
   @override
   _CustomDialogBoxState createState() => _CustomDialogBoxState();
@@ -33,6 +36,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
   }
 
   contentBox(context, Function() doMe) {
+    User? user = FirebaseAuth.instance.currentUser;
     return Stack(
       children: <Widget>[
         Container(
@@ -104,26 +108,28 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
             ],
           ),
         ),
-        Positioned(
-          left: Constants.padding,
-          right: Constants.padding,
-          child: CircleAvatar(
-            backgroundColor: Colors.transparent,
-            radius: Constants.avatarRadius,
-            child: ClipRRect(
-              borderRadius:
-                  BorderRadius.all(Radius.circular(Constants.avatarRadius)),
-              child: CachedNetworkImage(
-                height: 60,
-                imageUrl:
-                    "https://www.pngkey.com/png/full/73-730477_first-name-profile-image-placeholder-png.png",
-                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    CircularProgressIndicator(value: downloadProgress.progress),
-                errorWidget: (context, url, error) => Icon(Icons.error),
+        if (widget.profilePicture)
+          Positioned(
+            left: Constants.padding,
+            right: Constants.padding,
+            child: CircleAvatar(
+              backgroundColor: Colors.transparent,
+              radius: Constants.avatarRadius,
+              child: ClipRRect(
+                borderRadius:
+                    BorderRadius.all(Radius.circular(Constants.avatarRadius)),
+                child: CachedNetworkImage(
+                  height: 60,
+                  imageUrl: user?.photoURL ??
+                      "https://www.pngkey.com/png/full/73-730477_first-name-profile-image-placeholder-png.png",
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(
+                          value: downloadProgress.progress),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

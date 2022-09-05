@@ -6,10 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:sasl_app/widgets/classes.dart';
 import 'package:sasl_app/widgets/reusable.dart';
 
-// final db = FirebaseFirestore.instance;
-
-final Stream<QuerySnapshot> seasons =
+Stream<QuerySnapshot> seasons =
     FirebaseFirestore.instance.collection("seasons").snapshots();
+
+// final db = FirebaseFirestore.instance;
 
 // test() async {
 //   await FirebaseFirestore.instance.collection("seasons").get().then((event) {
@@ -33,7 +33,7 @@ class mainMenuPage extends StatelessWidget {
         child: Column(
           children: [
             spacer(spacerSize),
-            gameLive(false),
+            //gameLive(false),
             const Text(
               "Matches",
               style: const TextStyle(
@@ -79,12 +79,15 @@ class mainMenuPage extends StatelessWidget {
                 for (var doc in teams_data) {
                   teamsList.add(
                     Teams(
-                        team_name: doc["name"],
-                        team_id: doc["team_id"],
-                        team_logo_url: doc["team_logo_url"],
-                        club_info: doc["club_info"],
-                        team_jersey_picture_url:
-                            doc["team_jersey_picture_url"]),
+                      team_name: doc["team_name"],
+                      team_id: doc["team_id"],
+                      team_logo_url: doc["team_logo_url"],
+                      club_info: doc["club_info"],
+                      team_jersey_picture_url: doc["team_jersey_picture_url"],
+                      head_coach: doc["head_coach"],
+                      assistant_coach: doc["assistant_coach"],
+                      team_manager: doc["team_manager"],
+                    ),
                   );
                 }
 
@@ -225,18 +228,34 @@ class mainMenuPage extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        CachedNetworkImage(
-                                          height: 60,
-                                          imageUrl: teamsList[
-                                                  int.parse(game.team_1_id) - 1]
-                                              .team_logo_url,
-                                          progressIndicatorBuilder: (context,
-                                                  url, downloadProgress) =>
-                                              CircularProgressIndicator(
-                                                  value: downloadProgress
-                                                      .progress),
-                                          errorWidget: (context, url, error) =>
-                                              Icon(Icons.error),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.rectangle,
+                                            color: Colors.white,
+                                            // borderRadius: BorderRadius.circular(
+                                            //     Constants.padding),
+                                            // boxShadow: [
+                                            //   BoxShadow(
+                                            //       color: Colors.black,
+                                            //       offset: Offset(0, 10),
+                                            //       blurRadius: 10),
+                                            // ]
+                                          ),
+                                          child: CachedNetworkImage(
+                                            height: 60,
+                                            imageUrl: teamsList[
+                                                    int.parse(game.team_1_id) -
+                                                        1]
+                                                .team_logo_url,
+                                            progressIndicatorBuilder: (context,
+                                                    url, downloadProgress) =>
+                                                CircularProgressIndicator(
+                                                    value: downloadProgress
+                                                        .progress),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                          ),
                                         ),
                                         spacer(10),
                                         Text(
@@ -286,18 +305,34 @@ class mainMenuPage extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        CachedNetworkImage(
-                                          height: 60,
-                                          imageUrl: teamsList[
-                                                  int.parse(game.team_2_id) - 1]
-                                              .team_logo_url,
-                                          progressIndicatorBuilder: (context,
-                                                  url, downloadProgress) =>
-                                              CircularProgressIndicator(
-                                                  value: downloadProgress
-                                                      .progress),
-                                          errorWidget: (context, url, error) =>
-                                              Icon(Icons.error),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.rectangle,
+                                            color: Colors.white,
+                                            // borderRadius: BorderRadius.circular(
+                                            //     Constants.padding),
+                                            // boxShadow: [
+                                            //   BoxShadow(
+                                            //       color: Colors.black,
+                                            //       offset: Offset(0, 10),
+                                            //       blurRadius: 10),
+                                            // ]
+                                          ),
+                                          child: CachedNetworkImage(
+                                            height: 60,
+                                            imageUrl: teamsList[
+                                                    int.parse(game.team_2_id) -
+                                                        1]
+                                                .team_logo_url,
+                                            progressIndicatorBuilder: (context,
+                                                    url, downloadProgress) =>
+                                                CircularProgressIndicator(
+                                                    value: downloadProgress
+                                                        .progress),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                          ),
                                         ),
                                         spacer(10),
                                         Text(
@@ -366,7 +401,7 @@ class mainMenuPage extends StatelessWidget {
                         post_id: doc["post_id"],
                         post_image_url: doc["post_image_url"],
                         post_title: doc["post_title"],
-                        post_timestamp: doc["timestamp"]),
+                        post_timestamp: doc["post_timestamp"]),
                   );
                 }
 
@@ -624,78 +659,78 @@ class mainMenuPage extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      print("Tappped");
-                    },
-                    child: Card(
-                      elevation: 5,
-                      color: Colors.red,
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                const Text('Game 1'),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                const Text("11/08/2022, 18:30")
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Image.network(
-                                      "https://cdn.britannica.com/27/4227-004-32423B42/Flag-South-Africa.jpg",
-                                      scale: 10,
-                                    ),
-                                    const Text("South Africa"),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                const Text(
-                                  "6:1",
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Image.network(
-                                      "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/255px-Flag_of_Italy.svg.png",
-                                      scale: 3,
-                                    ),
-                                    const Text("Italy"),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text("Watch Live"),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     print("Tappped");
+                  //   },
+                  //   child: Card(
+                  //     elevation: 5,
+                  //     color: Colors.red,
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.all(15.0),
+                  //       child: Column(
+                  //         mainAxisSize: MainAxisSize.min,
+                  //         children: [
+                  //           Row(
+                  //             mainAxisSize: MainAxisSize.min,
+                  //             children: <Widget>[
+                  //               const Text('Game 1'),
+                  //               const SizedBox(
+                  //                 width: 20,
+                  //               ),
+                  //               const Text("11/08/2022, 18:30")
+                  //             ],
+                  //           ),
+                  //           const SizedBox(
+                  //             height: 10,
+                  //           ),
+                  //           Row(
+                  //             children: [
+                  //               Column(
+                  //                 mainAxisSize: MainAxisSize.max,
+                  //                 mainAxisAlignment:
+                  //                     MainAxisAlignment.spaceEvenly,
+                  //                 children: [
+                  //                   Image.network(
+                  //                     "https://cdn.britannica.com/27/4227-004-32423B42/Flag-South-Africa.jpg",
+                  //                     scale: 10,
+                  //                   ),
+                  //                   const Text("South Africa"),
+                  //                 ],
+                  //               ),
+                  //               const SizedBox(
+                  //                 width: 10,
+                  //               ),
+                  //               const Text(
+                  //                 "6:1",
+                  //                 style: TextStyle(fontSize: 20),
+                  //               ),
+                  //               const SizedBox(
+                  //                 width: 10,
+                  //               ),
+                  //               Column(
+                  //                 mainAxisSize: MainAxisSize.max,
+                  //                 mainAxisAlignment:
+                  //                     MainAxisAlignment.spaceEvenly,
+                  //                 children: [
+                  //                   Image.network(
+                  //                     "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/255px-Flag_of_Italy.svg.png",
+                  //                     scale: 3,
+                  //                   ),
+                  //                   const Text("Italy"),
+                  //                 ],
+                  //               ),
+                  //             ],
+                  //           ),
+                  //           const SizedBox(
+                  //             height: 10,
+                  //           ),
+                  //           const Text("Watch Live"),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
